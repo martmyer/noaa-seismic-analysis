@@ -133,7 +133,53 @@ WHERE Earthquake_Mag IS NOT NULL AND Max_Water_Height_m IS NOT NULL
 GROUP BY 1
 ORDER BY MIN(Earthquake_Mag);
 
+Used Pandas, NumPy, Matplotlib, and Seaborn in Jupyter Notebook to perform statistical analysis and create visualizations from the SQLite database.
 
+Data Loading & Validation
+
+import pandas as pd
+import sqlite3
+
+conn = sqlite3.connect('noaa_seismic.db')
+earthquakes = pd.read_sql_query("SELECT * FROM earthquakes_clean", conn)
+tsunamis = pd.read_sql_query("SELECT * FROM tsunamis_clean", conn)
+conn.close()
+
+print(f"Earthquakes: {len(earthquakes)} records")  # 4,042 events
+print(f"Tsunamis: {len(tsunamis)} records")        # 1,606 events
+Earthquake Statistical Analysis
+
+# Magnitude distribution statistics
+earthquakes['Mag'].describe()
+
+# Events grouped by decade
+earthquakes['Decade'] = (earthquakes['Year'] // 10) * 10
+by_decade = earthquakes.groupby('Decade').agg({
+    'Mag': ['count', 'mean', 'max'],
+    'Deaths': 'sum'
+})
+
+# Top 10 deadliest earthquakes
+earthquakes.nlargest(10, 'Deaths')[['Year', 'Location_Name', 'Mag', 'Deaths']]
+Tsunami Correlation Analysis
+
+# Filter events with both magnitude and wave height data
+eq_tsunamis = tsunamis[
+    (tsunamis['Earthquake_Mag'].notna()) & 
+    (tsunamis['Max_Water_Height_m'].notna())
+].copy()
+
+# Calculate correlation coefficient
+correlation = eq_tsunamis['Earthquake_Mag'].corr(eq_tsunamis['Max_Water_Height_m'])
+print(f"Correlation: r = {correlation:.2f}")  # r = 0.72
+
+# Average wave height by magnitude range
+eq_tsunamis['Mag_Range'] = pd.cut(
+    eq_tsunamis['Earthquake_Mag'],
+    bins=[0, 6, 7, 8, 9, 10],
+    labels=['<6', '6-7', '7-8', '8-9', '9+']
+)
+eq_tsunamis.groupby('Mag_Range', observed=True)['Max_Water_Height_m'].agg(['mean', 'max', 'count'])
 
 
 
