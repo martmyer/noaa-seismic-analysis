@@ -11,181 +11,42 @@ Earthquake Data - https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/search
 Tsunami Data - https://www.ngdc.noaa.gov/hazel/view/hazards/tsunami/event-search/ 
 ## Executive Summary
 
-Analysis of **2,400+ seismic events** from NOAA's National Centers for Environmental Information to identify geographic clustering patterns, temporal trends in data collection methodology, and the statistical relationship between earthquake magnitude and tsunami generation.
+# 🌊 Seismic Data Analysis: Earthquakes & Tsunamis
 
-**Key Finding:** 78% of tsunamigenic earthquakes originate within the Pacific Ring of Fire, with magnitude ≥7.5 events showing 12x higher probability of tsunami generation compared to magnitude 6.0-6.9 events.
+## Overview
+Analysis of 4,000+ years of earthquake and tsunami data from NOAA, 
+exploring patterns in magnitude, geographic distribution, and impact.
 
----
+## Key Findings
+- 📊 75% of major earthquakes occur in the Pacific Ring of Fire
+- 🌊 Earthquake magnitude correlates strongly with tsunami wave height
+- 📉 Deaths per earthquake have decreased 60% since 1950
 
-## Business Questions Addressed
+## Technologies Used
+- **SQL**: Data extraction and aggregation (PostgreSQL/SQLite)
+- **Python**: Pandas, NumPy, Matplotlib, Plotly, Folium
+- **Tableau**: Interactive dashboard visualization
 
-| Question | Methodology | Key Insight |
-|----------|-------------|-------------|
-| Where do catastrophic seismic events cluster? | Geospatial analysis, symbol mapping | Pacific Rim accounts for 75%+ of M7.0+ events |
-| Has earthquake frequency increased over time? | Time series decomposition | No—recording capability increased post-1960 |
-| What predicts tsunami generation? | Correlation analysis, calculated fields | Magnitude + depth + coastal proximity |
-| Are fatalities decreasing per event? | Trend analysis with normalization | Yes—60% reduction since 1950 (infrastructure improvements) |
+## Data Sources
+- NOAA NCEI Global Tsunami Database
+- NOAA NCEI Significant Earthquake Database
 
----
-
-## Technical Implementation
-
-
-
-
-Key Findings
-1. Geographic Concentration
-The Pacific Ring of Fire contains 75%+ of all recorded M7.0+ earthquakes, with Indonesia, Japan, and Chile representing the highest-density clusters.
-
-2. Data Collection Bias
-Earthquake recording increased 400% between 1960-1980 due to expanded seismograph networks—critical context when interpreting historical trends.
-
-3. Magnitude-Tsunami Correlation
-Events ≥M7.5 show strong positive correlation (r = 0.72) with tsunami wave height. Subduction zone earthquakes at depths <70km have highest tsunamigenic probability.
-
-4. Declining Mortality Rate
-Deaths per earthquake event decreased 60% since 1950, attributable to improved building codes, early warning systems, and emergency response infrastructure.
-
-Methodology Notes
-Limitations:
-
-Historical data pre-1900 incomplete; analysis constrained to modern recording era
-Death toll figures subject to reporting inconsistencies across nations
-Tsunami wave height measurements standardized only after 1960
-Assumptions:
-
-Events with missing magnitude excluded from correlation analysis
-Geographic coordinates rounded to 0.1° for clustering analysis
-
-Repository Structure 
-├── data/
-│   ├── earthquakes_clean.tsv
-│   └── tsunamis_clean.tsv
-├── tableau/
-│   └── seismic_dashboard.twbx
-├── documentation/
-│   └── data_dictionary.md
+## Project Structure
+├── data/           # Raw and cleaned CSV files
+├── notebooks/      # Jupyter notebooks with analysis
+├── sql/            # SQL queries used
+├── output/         # Generated visualizations
 └── README.md
 
+## How to Run
+1. Clone repo: `git clone [repo-url]`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run notebooks in order: 01_clean_data.ipynb → 02_analysis.ipynb
 
-
-
-These queries transform raw NOAA data into actionable insights.
-
-
-
--- 1. Basic Data Exploration
-SELECT COUNT(*) as total_earthquakes FROM earthquakes_clean;
-SELECT COUNT(*) as total_tsunamis FROM tsunamis_clean;
-
--- 2. Magnitude Distribution Analysis
-SELECT 
-    CASE 
-        WHEN Mag < 5 THEN '< 5.0 (Minor)'
-        WHEN Mag < 6 THEN '5.0-5.9 (Moderate)'
-        WHEN Mag < 7 THEN '6.0-6.9 (Strong)'
-        WHEN Mag < 8 THEN '7.0-7.9 (Major)'
-        ELSE '8.0+ (Great)'
-    END as magnitude_category,
-    COUNT(*) as event_count,
-    ROUND(AVG(Deaths), 0) as avg_deaths,
-    MAX(Deaths) as max_deaths
-FROM earthquakes_clean
-WHERE Mag IS NOT NULL
-GROUP BY 1
-ORDER BY MIN(Mag);
-
--- 3. Top 10 Earthquake Locations
-SELECT 
-    Location_Name,
-    COUNT(*) as earthquake_count,
-    ROUND(AVG(Mag), 2) as avg_magnitude,
-    SUM(COALESCE(Deaths, 0)) as total_deaths
-FROM earthquakes_clean
-WHERE Location_Name IS NOT NULL
-GROUP BY Location_Name
-ORDER BY earthquake_count DESC
-LIMIT 10;
-
--- 4. Earthquakes by Decade
-SELECT 
-    (Year / 10) * 10 as decade,
-    COUNT(*) as earthquake_count,
-    ROUND(AVG(Mag), 2) as avg_magnitude,
-    SUM(COALESCE(Deaths, 0)) as total_deaths
-FROM earthquakes_clean
-WHERE Year >= 1900
-GROUP BY (Year / 10) * 10
-ORDER BY decade;
-
--- 5. Tsunami Correlation (Earthquake Mag vs Wave Height)
-SELECT 
-    CASE 
-        WHEN Earthquake_Mag < 7 THEN '< 7.0'
-        WHEN Earthquake_Mag < 8 THEN '7.0-7.9'
-        WHEN Earthquake_Mag < 9 THEN '8.0-8.9'
-        ELSE '9.0+'
-    END as eq_magnitude_range,
-    COUNT(*) as tsunami_count,
-    ROUND(AVG(Max_Water_Height_m), 2) as avg_wave_height_m,
-    MAX(Max_Water_Height_m) as max_wave_height_m
-FROM tsunamis_clean
-WHERE Earthquake_Mag IS NOT NULL AND Max_Water_Height_m IS NOT NULL
-GROUP BY 1
-ORDER BY MIN(Earthquake_Mag);
-
-Used Pandas, NumPy, Matplotlib, and Seaborn in Jupyter Notebook to perform statistical analysis and create visualizations from the SQLite database.
-
-Data Loading & Validation
-
-import pandas as pd
-import sqlite3
-
-conn = sqlite3.connect('noaa_seismic.db')
-earthquakes = pd.read_sql_query("SELECT * FROM earthquakes_clean", conn)
-tsunamis = pd.read_sql_query("SELECT * FROM tsunamis_clean", conn)
-conn.close()
-
-print(f"Earthquakes: {len(earthquakes)} records")  # 4,042 events
-print(f"Tsunamis: {len(tsunamis)} records")        # 1,606 events
-Earthquake Statistical Analysis
-
-# Magnitude distribution statistics
-earthquakes['Mag'].describe()
-
-# Events grouped by decade
-earthquakes['Decade'] = (earthquakes['Year'] // 10) * 10
-by_decade = earthquakes.groupby('Decade').agg({
-    'Mag': ['count', 'mean', 'max'],
-    'Deaths': 'sum'
-})
-
-# Top 10 deadliest earthquakes
-earthquakes.nlargest(10, 'Deaths')[['Year', 'Location_Name', 'Mag', 'Deaths']]
-Tsunami Correlation Analysis
-
-# Filter events with both magnitude and wave height data
-eq_tsunamis = tsunamis[
-    (tsunamis['Earthquake_Mag'].notna()) & 
-    (tsunamis['Max_Water_Height_m'].notna())
-].copy()
-
-# Calculate correlation coefficient
-correlation = eq_tsunamis['Earthquake_Mag'].corr(eq_tsunamis['Max_Water_Height_m'])
-print(f"Correlation: r = {correlation:.2f}")  # r = 0.72
-
-# Average wave height by magnitude range
-eq_tsunamis['Mag_Range'] = pd.cut(
-    eq_tsunamis['Earthquake_Mag'],
-    bins=[0, 6, 7, 8, 9, 10],
-    labels=['<6', '6-7', '7-8', '8-9', '9+']
-)
-eq_tsunamis.groupby('Mag_Range', observed=True)['Max_Water_Height_m'].agg(['mean', 'max', 'count'])
-
-
-
-
+## Dashboard
 Live Dashboard https://public.tableau.com/views/Book1_17699929614320/NOAAAnalysis?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+
+
 
 
 
