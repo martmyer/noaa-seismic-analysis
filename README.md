@@ -32,10 +32,6 @@ Analysis of **2,400+ seismic events** from NOAA's National Centers for Environme
 ### Data Pipeline
 
 
-
-
-
-
 Visualization Components
 Chart Type	Purpose	Interactivity
 Symbol Map	Geographic distribution	Cross-filter enabled
@@ -47,6 +43,9 @@ Global Filters: Year range, Magnitude threshold (isolate M7.0+ events)
 Cross-Filtering: Click any map region to filter all visualizations
 Dynamic Tooltips: Event details on hover
 Responsive Layout: Desktop and tablet optimized
+
+
+
 Key Findings
 1. Geographic Concentration
 The Pacific Ring of Fire contains 75%+ of all recorded M7.0+ earthquakes, with Indonesia, Japan, and Chile representing the highest-density clusters.
