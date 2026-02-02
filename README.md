@@ -7,6 +7,7 @@ Geospatial and temporal analysis of historical earthquake data using Tableau
 Live Dashboard https://public.tableau.com/views/Book1_17699929614320/NOAAAnalysis?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
 
 Earthquake Data - https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/search
+
 Tsunami Data - https://www.ngdc.noaa.gov/hazel/view/hazards/tsunami/event-search/ 
 ## Executive Summary
 
