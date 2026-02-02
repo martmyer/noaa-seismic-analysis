@@ -29,20 +29,6 @@ Analysis of **2,400+ seismic events** from NOAA's National Centers for Environme
 
 ## Technical Implementation
 
-### Data Pipeline
-
-
-Visualization Components
-Chart Type	Purpose	Interactivity
-Symbol Map	Geographic distribution	Cross-filter enabled
-Line Chart	Temporal frequency trends	Year range filter
-Bar Chart	Magnitude distribution	Magnitude threshold filter
-Scatter Plot	Magnitude vs. Wave Height	Tooltip with event details
-Dashboard Features
-Global Filters: Year range, Magnitude threshold (isolate M7.0+ events)
-Cross-Filtering: Click any map region to filter all visualizations
-Dynamic Tooltips: Event details on hover
-Responsive Layout: Desktop and tablet optimized
 
 
 
