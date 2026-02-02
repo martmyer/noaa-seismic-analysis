@@ -38,10 +38,7 @@ exploring patterns in magnitude, geographic distribution, and impact.
 ├── output/         # Generated visualizations
 └── README.md
 
-## How to Run
-1. Clone repo: `git clone [repo-url]`
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run notebooks in order: 01_clean_data.ipynb → 02_analysis.ipynb
+
 
 ## Dashboard
 Live Dashboard https://public.tableau.com/views/Book1_17699929614320/NOAAAnalysis?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
