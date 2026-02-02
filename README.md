@@ -2,7 +2,7 @@
 Geospatial and temporal analysis of historical earthquake data using Tableau
 
 
-# Seismic Event Analysis: Global Earthquake & Tsunami Patterns (1900-2024)
+# Seismic Event Analysis: Global Earthquake & Tsunami Patterns (1900-2025)
 
 Live Dashboard https://public.tableau.com/views/Book1_17699929614320/NOAAAnalysis?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
 
