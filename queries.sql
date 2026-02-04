@@ -4,9 +4,17 @@ FROM earthquakes_clean
 GROUP BY Decade ORDER BY Total_Deaths DESC;
 
 ---Top 10 Locations
-SELECT Location_Name, COUNT(*), AVG(Mag), SUM(Deaths), MAX(Mag)
-FROM earthquakes_clean GROUP BY Location_Name ORDER BY earthquake_count DESC LIMIT 10;
-
+SELECT 
+    Location_Name, 
+    COUNT(*) as earthquake_count, 
+    ROUND(AVG(Mag), 2) as avg_magnitude,
+    SUM(COALESCE(Deaths, 0)) as total_deaths, 
+    MAX(Mag) as max_magnitude
+FROM earthquakes_clean 
+WHERE Location_Name IS NOT NULL
+GROUP BY Location_Name 
+ORDER BY earthquake_count DESC 
+LIMIT 10;
 
 -- Distribution of earthquake magnitudes
 SELECT 
