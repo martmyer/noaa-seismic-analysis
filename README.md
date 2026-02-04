@@ -14,7 +14,7 @@ Tsunami Data - https://www.ngdc.noaa.gov/hazel/view/hazards/tsunami/event-search
 # 🌊 Seismic Data Analysis: Earthquakes & Tsunamis
 
 ## Overview
-Analysis of 4,000+ years of earthquake and tsunami data from NOAA, 
+Analysis of 125 years of earthquake and tsunami data from NOAA, 
 exploring patterns in magnitude, geographic distribution, and impact.
 
 ## Key Findings
